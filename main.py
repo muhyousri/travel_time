@@ -1,10 +1,10 @@
-#!/bin/env python3
-
+#!/usr/bin/env python3 -u
 
 import googlemaps
 from datetime import datetime
 import os
 import pwd
+# TODO: add proper logging
 import csv
 
 
@@ -33,9 +33,10 @@ def get_times(origin, dest):
     return outbound_hours, return_hours
 
 
+# TODO: Handle error
 with open(f"{home_dir}/report-{today_date}", 'a', newline='') as csv_file:
     csv_writer = csv.writer(csv_file)
     outbound_hours, return_hours = get_times(HOME, WORK)
-    csv_writer.writerow(["Time", "To Work", "From Work"])
     csv_writer.writerow(
         [time_now, outbound_hours, return_hours])
+print("All done..")
