@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-import googlemaps
 from datetime import datetime
 import os
 import pwd
 # TODO: add proper logging
 import csv
+import googlemaps
 
 
 API_KEY = os.environ['MAPS_KEY']
