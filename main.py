@@ -9,8 +9,8 @@ import googlemaps
 
 
 API_KEY = os.environ['MAPS_KEY']
-HOME = '53.1913182,-6.8135572'
-WORK = '53.3306141,-6.2499912'
+HOME = 'W12A314'
+WORK = 'D04 HH21'
 time_now = datetime.now().strftime('%H:%M')
 today_date = datetime.today().date()
 home_dir = pwd.getpwuid(os.getuid()).pw_dir
@@ -25,9 +25,9 @@ def convert_hhmm(seconds):
 
 def get_times(origin, dest):
     outbound_seconds = gmaps.directions(
-        destination=dest, origin=origin)[0]["legs"][0]["duration"]["value"]
+        destination=dest, origin=origin, departure_time="now")[0]["legs"][0]["duration_in_traffic"]["value"]
     return_seconds = gmaps.directions(
-        destination=origin, origin=dest)[0]["legs"][0]["duration"]["value"]
+        destination=origin, origin=dest, departure_time="now")[0]["legs"][0]["duration_in_traffic"]["value"]
     outbound_hours = convert_hhmm(outbound_seconds)
     return_hours = convert_hhmm(return_seconds)
     return outbound_hours, return_hours
