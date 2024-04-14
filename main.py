@@ -3,7 +3,7 @@
 from datetime import datetime
 import os
 import pwd
-# TODO: add proper logging
+import logging
 import csv
 import googlemaps
 
@@ -11,19 +11,21 @@ import googlemaps
 API_KEY = os.environ['MAPS_KEY']
 HOME = 'W12A314'
 WORK = 'D04 HH21'
-time_now = datetime.now().strftime('%H:%M')
+time_now = datetime.now().strftime('%A %H:%M')
 today_date = datetime.today().date()
 home_dir = pwd.getpwuid(os.getuid()).pw_dir
 gmaps = googlemaps.Client(key=API_KEY)
 
 
 def convert_hhmm(seconds):
+    """converts to HH:MM"""
     hours = seconds // 3600
     minutes = (seconds % 3600) // 60
     return f"{hours:02d}:{minutes:02d}"
 
 
 def get_times(origin, dest):
+    """Gets times"""
     outbound_seconds = gmaps.directions(
         destination=dest, origin=origin, departure_time="now")[0]["legs"][0]["duration_in_traffic"]["value"]
     return_seconds = gmaps.directions(
