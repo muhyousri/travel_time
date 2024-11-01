@@ -2,19 +2,19 @@
 
 from datetime import datetime
 import os
-import pwd
 import logging
 import csv
 import googlemaps
 
 
 API_KEY = os.environ['MAPS_KEY']
-HOME = 'W12A314'
-WORK = 'D04 HH21'
+HOME = os.environ['ORIGIN']
+WORK = os.environ['DEST']
 time_now = datetime.now().strftime('%A %H:%M')
 today_date = datetime.today().date()
-home_dir = pwd.getpwuid(os.getuid()).pw_dir
+home_dir = os.getcwd()
 gmaps = googlemaps.Client(key=API_KEY)
+print(home_dir)
 
 
 def convert_hhmm(seconds):
@@ -26,16 +26,22 @@ def convert_hhmm(seconds):
 
 def get_times(origin, dest):
     """Gets times"""
-    outbound_seconds = gmaps.directions(
-        destination=dest, origin=origin, departure_time="now")[0]["legs"][0]["duration_in_traffic"]["value"]
-    return_seconds = gmaps.directions(
-        destination=origin, origin=dest, departure_time="now")[0]["legs"][0]["duration_in_traffic"]["value"]
+    try:
+        outbound_seconds = gmaps.directions(
+            destination=dest, origin=origin, departure_time="now")[0]["legs"][0]["duration_in_traffic"]["value"]
+    except (IndexError, KeyError) as e:
+        print(f"Error getting outbound duration: {e}")
+    try:
+        return_seconds = gmaps.directions(
+            destination=origin, origin=dest, departure_time="now")[0]["legs"][0]["duration_in_traffic"]["value"]
+    except (IndexError, KeyError) as e:
+        print(f"Error getting outbound duration: {e}")
+
     outbound_hours = convert_hhmm(outbound_seconds)
     return_hours = convert_hhmm(return_seconds)
     return outbound_hours, return_hours
 
 
-# TODO: Handle error
 with open(f"{home_dir}/report-{today_date}", 'a', newline='') as csv_file:
     csv_writer = csv.writer(csv_file)
     outbound_hours, return_hours = get_times(HOME, WORK)
